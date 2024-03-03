@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 // Classe UserForms
 class UserForms {
@@ -55,25 +56,47 @@ class FinancingForm extends UserForms {
 // Classe principale pour tester la validation
 public class Main {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
         // Exemple d'utilisation :
         FinancingForm financingForm = new FinancingForm();
 
-        // Simuler la soumission du formulaire avec des données invalides
-        financingForm.validateVIN("1234567890123456");
-        financingForm.validateLoanAmount(75000);
-        financingForm.validateLoanDuration(5);
-        financingForm.validateMileage(250000, true);
+        // Saisir les informations du formulaire
+        System.out.print("Entrez le numéro d'identification du véhicule (VIN) : ");
+        String vin = scanner.nextLine();
+        financingForm.validateVIN(vin);
+
+        System.out.print("Entrez le montant du prêt désiré : ");
+        double loanAmount = scanner.nextDouble();
+        financingForm.validateLoanAmount(loanAmount);
+
+        System.out.print("Entrez la durée du prêt en années : ");
+        int loanDuration = scanner.nextInt();
+        financingForm.validateLoanDuration(loanDuration);
+
+        System.out.print("Le véhicule est-il d'occasion (true/false) : ");
+        boolean isUsedVehicle = scanner.nextBoolean();
+
+        // Valider le kilométrage uniquement pour les véhicules d'occasion
+        if (isUsedVehicle) {
+            System.out.print("Entrez le kilométrage du véhicule : ");
+            int mileage = scanner.nextInt();
+            financingForm.validateMileage(mileage, isUsedVehicle);
+        }
 
         // Afficher les erreurs s'il y en a
         if (!financingForm.errors.isEmpty()) {
-            System.out.println("Erreurs de validation du formulaire:");
+            System.out.println("\nErreurs de validation du formulaire:");
             for (Map.Entry<String, String> entry : financingForm.errors.entrySet()) {
                 // Imprimer chaque message d'erreur
                 System.out.println(entry.getKey() + ": " + entry.getValue());
             }
         } else {
             // Si aucune erreur, imprimer le message de réussite
-            System.out.println("Formulaire de demande de financement validé avec succès!");
+            System.out.println("\nFormulaire de demande de financement validé avec succès!");
         }
+
+        // Fermer le scanner
+        scanner.close();
     }
 }
